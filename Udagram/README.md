@@ -22,7 +22,7 @@ Optional - To add more challenge to the project, once the project is completed, 
 
 ### Architecture Diagram
 
-![Architecture Diagram!](Parameters\UdagramDiagram.png)
+![Architecture Diagram!](https://github.com/Sirlawdin/UdacityALX_DevOps_Nanodegree/blob/main/Udagram/UdagramDiagram.png)
 
 # Website Link :
 
