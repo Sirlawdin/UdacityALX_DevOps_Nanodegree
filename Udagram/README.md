@@ -26,9 +26,7 @@ Two vCPUs was used with 4GB of RAM. The Operating System used is Ubuntu 18. An I
 
 # MY SOLUTION:
 
-### Architecture Diagram
-
-![Architecture Diagram!](Udagram\Parameters\UdagramDiagram.png)
+## Architecture Diagram
 
 ### Script Usage
 This Repository contains some scripts that will be used to create the CloudFormation stack. 
@@ -36,6 +34,7 @@ This Repository contains some scripts that will be used to create the CloudForma
 #### Usage:
 
 > Create:
+
 ```
 ./create.sh (stackName) (script.yml) (parameters.json) (profile)
 ```
@@ -45,6 +44,7 @@ This Repository contains some scripts that will be used to create the CloudForma
 ```
 ./create.sh Udagram infrastructure/network.yaml parameters/network.json udacity_user
 ```
+
 
 > Update:
 
