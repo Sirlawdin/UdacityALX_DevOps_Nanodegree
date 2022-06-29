@@ -30,19 +30,32 @@ Two vCPUs was used with 4GB of RAM. The Operating System used is Ubuntu 18. An I
 
 ![Architecture Diagram!](Udagram\Parameters\UdagramDiagram.png)
 
-#### Script Usage
+### Script Usage
 This Repository contains some scripts that will be used to create the CloudFormation stack. 
 
-> Usage:
+#### Usage:
 
+> Create:
 ```
-./create.sh (stackName) (script.yml) (parameters.json)
+./create.sh (stackName) (script.yml) (parameters.json) (profile)
 ```
 
 > Example:
 
 ```
-./create.sh Udagram infrastructure/network.yaml parameters/network.json
+./create.sh Udagram infrastructure/network.yaml parameters/network.json udacity_user
+```
+
+> Update:
+
+```
+./update.sh (stackName) (script.yml) (parameters.json) (profile)
+```
+
+> Example:
+
+```
+./update.sh Udagram infrastructure/network.yaml parameters/network.json udacity_user
 ```
 
 ![Architecture Diagram!](https://github.com/Sirlawdin/UdacityALX_DevOps_Nanodegree/blob/main/Udagram/UdagramDiagram.png)
