@@ -24,13 +24,13 @@ Customized error Page: https://dgfxocffcttr8.cloudfront.net/error
 A customized error page was created and on the page is a link back to the home URL.
 
 
-<pre>
+<br>
 
 
 
 
 
-</pre>
+</br>
 
 ## Udacity Cloud DevOps Udagram Project2
 
