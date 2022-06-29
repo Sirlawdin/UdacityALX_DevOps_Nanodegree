@@ -1,0 +1,300 @@
+# Infrastructure as Code
+# Exercise solution
+# Salaudeen O. Abdulrasaq
+
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Creates the required network infrastructure for public and private routing with internet access
+Parameters: 
+  EnvironmentName: 
+    Description: An Environment name that will be prefixed to resources
+    Type: String
+  VPCCIDR:
+    Type: String
+  PrivSubnet1CIDR:
+    Type: String
+  PrivSubnet2CIDR:
+    Type: String
+  PubSubnet1CIDR:
+    Type: String
+  PubSubnet2CIDR:
+    Type: String
+
+Resources:
+  myVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VPCCIDR
+      EnableDnsHostnames: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: "MainVPC"
+
+# Create Internet Gateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+
+# Attached the internet Gateway to myVPC
+  InternetGatewayAttached:    
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref myVPC
+  
+# Creating Public and Private Subnets in the same availability zone(us-east-1a).
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1a"
+      CidrBlock: !Ref PubSubnet1CIDR
+      VpcId:
+        Ref: myVPC
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: myVPC
+      CidrBlock: !Ref PrivSubnet1CIDR
+      MapPublicIpOnLaunch: false
+      AvailabilityZone: "us-east-1a"
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
+
+        
+# Creating Public and Private Subnets in the same availability zone(us-east-1b).
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1b"
+      CidrBlock: !Ref PubSubnet2CIDR
+      VpcId:
+        Ref: myVPC
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: myVPC
+      CidrBlock: !Ref PrivSubnet2CIDR
+      MapPublicIpOnLaunch: false
+      AvailabilityZone: "us-east-1b"
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
+
+# Elastic IP for the NATGateway in Subnet1
+  EIP1:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttached
+    Properties:
+        Domain: myVPC
+        Tags:
+        - Key: Name
+          Value: "Elastic IP for our NATGateway1"
+  EIP2:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttached
+    Properties:
+        Domain: myVPC
+        Tags:
+        - Key: Name
+          Value: "Elastic IP for our NATGateway2"
+
+# Creating NAT gateway in publicsubnet1
+  NAT1:
+    Type: AWS::EC2::NatGateway
+    Properties:
+        AllocationId:
+          Fn::GetAtt:
+          - EIP1
+          - AllocationId
+        SubnetId: !Ref PublicSubnet1
+        Tags:
+        - Key: Name
+          Value: "NAT to be used by servers in the private subnet"
+  NAT2:
+    Type: AWS::EC2::NatGateway
+    Properties:
+        AllocationId:
+          Fn::GetAtt:
+          - EIP2
+          - AllocationId
+        SubnetId: !Ref PublicSubnet2
+        Tags:
+        - Key: Name
+          Value: "NAT to be used by servers in the private subnet"
+
+
+
+#_______PUBLIC SUBNET________
+# # Route Table for Public subnet
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref myVPC
+      Tags:
+      - Key: Name
+        Value: !Sub ${EnvironmentName} Public Routes
+
+# Create Route for public Subnet 1 & 2 
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttached
+    Properties:
+        RouteTableId: !Ref PublicRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId:
+          Ref: InternetGateway
+
+# Associate Route Table to Public subnet 1 & 2
+  AssociatePublicRoute:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: 
+        Ref: PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+  
+  AssociatePublicRoute:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: 
+        Ref: PublicRouteTable
+      SubnetId: !Ref PublicSubnet2
+
+
+# ______PRIVATE SUBNET 1______
+# Route Table for Private subnet1
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref myVPC
+      Tags:
+      - Key: Name
+        Value: !Sub ${EnvironmentName} Private Routes (AZ1)
+
+# Create Route for Private subnet1
+  PrivateRoute1:
+    Type: AWS::EC2::Route
+    Properties:
+        RouteTableId: !Ref PrivateRouteTable1
+        DestinationCidrBlock: 0.0.0.0/0
+        NatGatewayId:
+          Ref: NAT1
+
+# Private Route Table1 Association to Private Subnet1
+  AssociatePrivateRoute:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId: !Ref PrivateSubnet1
+
+
+
+# _____PRIVATE SUBNET 2_____
+# Route Table for Private subnet2
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref myVPC
+      Tags:
+      - Key: Name
+        Value: !Sub ${EnvironmentName} Private Routes (AZ2)
+
+# Create Route for Private subnet2
+  PrivateRoute2:
+    Type: AWS::EC2::Route
+    Properties:
+        RouteTableId: !Ref PrivateRouteTable2
+        DestinationCidrBlock: 0.0.0.0/0
+        NatGatewayId:
+          Ref: NAT2
+
+# Private Route Table2 Association to Private Subnet2
+  AssociatePrivateRoute:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId: !Ref PrivateSubnet2
+
+
+Outputs:
+  myVPC:
+    Description: The VPC created for this project
+    Value: !Ref myVPC
+    Export:
+      Name: !Sub ${EnvironmentName}-VPCID
+
+  PublicRouteTable: 
+        Description: Public Route Table
+        Value: !Ref PublicRouteTable
+        Export:
+          Name: !Sub ${EnvironmentName}-PUB-RT
+  
+  PrivateRouteTable1: 
+        Description: Private route Table1
+        Value: !Ref PrivateRouteTable1
+        Export:
+          Name: !Sub ${EnvironmentName}-PRI-RT1
+
+  PrivateRouteTable2: 
+        Description: Private route Table2
+        Value: !Ref PrivateRouteTable2
+        Export:
+          Name: !Sub ${EnvironmentName}-PRI-RT2
+
+  PublicSubnets:
+        Description: A list of the public subnets
+        Value: !Join [ ",", [ !Ref PublicSubnet1, !Ref PublicSubnet2 ]]
+        Export:
+          Name: !Sub ${EnvironmentName}-PUB-SUBNETS
+
+  PublicSubnet1:
+        Description: public subnet 1 in "us-east-1a"
+        Value: !Ref PublicSubnet1
+        Export:
+          Name: !Sub ${EnvironmentName}-PUB-SUB1
+
+  PublicSubnet2:
+        Description: public subnet 2 in us-east-1b
+        Value: !Ref PublicSubnet2
+        Export:
+          Name: !Sub ${EnvironmentName}-PUB-SUB2
+
+  PrivateSubnets:
+        Description: A list of the private subnets
+        Value: !Join [ ",", [ !Ref PrivateSubnet1, !Ref PrivateSubnet2 ]]
+        Export:
+          Name: !Sub ${EnvironmentName}-PRIV-SUBNETS
+
+  PrivateSubnet1:
+        Description: private subnet 1 in us-east-1a
+        Value: !Ref PrivateSubnet1
+        Export:
+          Name: !Sub ${EnvironmentName}-PRIV-SUB1
+
+  PrivateSubnet2:
+        Description: private subnet 1 in us-east-1b
+        Value: !Ref PrivateSubnet2
+        Export:
+          Name: !Sub ${EnvironmentName}-PRIV-SUB2
+
+  VPCdefaultSecurityGroup:
+        Description: Returns the default security group of the created VPC
+        Value: !GetAtt myVPC.DefaultSecurityGroup
+        Export:
+          Name: !Sub ${EnvironmentName}-myVPC-SG
