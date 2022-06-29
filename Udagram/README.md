@@ -22,7 +22,7 @@ Optional - To add more challenge to the project, once the project is completed, 
 
 ### Architecture Diagram
 
-![Architecture Diagram!](C:\Users\salau\Music\UdacityALX\Udagram\Udagram Diagram.png)
+![Architecture Diagram!](Udagram\Udagram Diagram.png)
 
 # Website Link :
 
