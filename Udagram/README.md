@@ -22,7 +22,7 @@ Optional - To add more challenge to the project, once the project is completed, 
 
 ### Architecture Diagram
 
-![Diagram](Udagram Diagram.png)
+![Architecture Diagram!](Udagram Diagram.png)
 
 # Website Link :
 
