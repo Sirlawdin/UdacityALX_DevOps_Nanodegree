@@ -1,4 +1,4 @@
-# UdacityALX_DevOps_Nanodegree
+# Udacity ALX DevOps
 <br>
 
 </br>
