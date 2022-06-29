@@ -3,7 +3,7 @@
 
 </br>
 
-## Udacity Cloud DevOps Udagram Project1
+# Udacity Cloud DevOps Udagram Project1
 
 ## Deploy Static Website on AWS
 #### Salaudeen O. Abdulrasaq salaudeen.abdulrasaq2021@gmail.com
@@ -35,7 +35,7 @@ A customized error page was created and on the page is a link back to the home U
 
 </br>
 
-## Udacity Cloud DevOps Udagram Project2
+# Udacity Cloud DevOps Udagram Project2
 
 ## Deploy a High-Availability Web App using CloudFormation
 
