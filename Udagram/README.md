@@ -31,9 +31,9 @@ Two vCPUs was used with 4GB of RAM. The Operating System used is Ubuntu 18. An I
 ### Script Usage
 This Repository contains some scripts that will be used to create the CloudFormation stack. 
 
-#### Usage:
+### Usage:
 
-> Create:
+#### Create:
 
 ```
 ./create.sh (stackName) (script.yml) (parameters.json) (profile)
@@ -46,7 +46,7 @@ This Repository contains some scripts that will be used to create the CloudForma
 ```
 
 
-> Update:
+#### Update:
 
 ```
 ./update.sh (stackName) (script.yml) (parameters.json) (profile)
