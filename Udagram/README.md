@@ -28,7 +28,6 @@ Two vCPUs was used with 4GB of RAM. The Operating System used is Ubuntu 18. An I
 
 ### Architecture Diagram
 
-<<<<<<< HEAD
 ![Architecture Diagram!](Udagram\Parameters\UdagramDiagram.png)
 
 #### Script Usage
@@ -46,9 +45,7 @@ This Repository contains some scripts that will be used to create the CloudForma
 ./create.sh Udagram infrastructure/network.yaml parameters/network.json
 ```
 
-=======
 ![Architecture Diagram!](https://github.com/Sirlawdin/UdacityALX_DevOps_Nanodegree/blob/main/Udagram/UdagramDiagram.png)
->>>>>>> 7d9e5ab33c3bba159b648b2a1271ec0e49583604
 
 # Website Link :
 
