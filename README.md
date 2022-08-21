@@ -6,7 +6,7 @@
 # Udacity Cloud DevOps Udagram Project1
 
 ## Deploy Static Website on AWS
-#### Salaudeen O. Abdulrasaq salaudeen.abdulrasaq2021@gmail.com
+#### Salaudeen O. Abdulrasaq [salaudeen.abdulrasaq2021@gmail.com]
 
 In this project, A static website was deployed to AWS using S3, CloudFront, and IAM.
 
